@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Quiz interactif sur la Tunisie avec niveaux de difficulté.">
+    <title>Quiz Interactif - Tunisie</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app">
+ 
+        <!-- ========== ÉCRAN D'ACCUEIL ========== -->
+        <section id="welcome-screen" class="screen active" aria-labelledby="welcome-title">
+            <div class="card welcome-card">
+                <h1 id="welcome-title">Quiz Tunisie</h1>
+ 
+                <div class="rules">
+                    <h2>Comment jouer ?</h2>
+                    <ul>
+                        <li>^\texttwemoji{1f4da}^ Choisissez une catégorie (ou toutes) et une difficulté</li>
+                        <li>^\texttwemoji{1f4dd}^ 5 questions (QCM et Vrai/Faux)</li>
+                        <li>^\texttwemoji{23f1}^ Le temps imparti et les points dépendent de la difficulté</li>
+                        <li>^\texttwemoji{2328}^ Au clavier : touches 1-4 ou A-D pour répondre</li>
+                        <li>^\texttwemoji{1f3c6}^ Vos meilleurs scores sont sauvegardés</li>
+                    </ul>
+                </div>
+ 
+                <div id="best-scores-container" class="best-scores hidden">
+                    <h3>^\texttwemoji{1f3c5}^ Vos meilleurs scores</h3>
+                    <ul id="best-scores-list"></ul>
+                    <button id="reset-scores-btn" class="btn-text" type="button">
+                        Réinitialiser les scores
+                    </button>
+                </div>
+ 
+                <button id="start-btn" class="btn btn-primary" type="button">
+                    Commencer le jeu ^$\rightarrow$^
+                </button>
+            </div>
+        </section>
+ 
+        <!-- ========== ÉCRAN DE CHOIX DE CATÉGORIE ========== -->
+        <section id="category-screen" class="screen" aria-labelledby="category-title">
+            <div class="card category-card">
+                <h1 id="category-title">^\texttwemoji{1f4da}^ Choisissez une catégorie</h1>
+ 
+                <!-- Sélecteur de difficulté -->
+                <div class="difficulty-selector" role="radiogroup" aria-label="Niveau de difficulté">
+                    <button type="button" class="diff-btn" role="radio" aria-checked="false" data-diff="facile">Facile</button>
+                    <button type="button" class="diff-btn active" role="radio" aria-checked="true" data-diff="moyen">Moyen</button>
+                    <button type="button" class="diff-btn" role="radio" aria-checked="false" data-diff="difficile">Difficile</button>
+                </div>
+ 
+                <div id="categories-grid" class="categories-grid">
+                    <!-- Les cartes catégories sont générées dynamiquement -->
+                </div>
+ 
+                <button id="back-home-btn" class="btn btn-secondary" type="button">
+                    ^$\leftarrow$^ Retour
+                </button>
+            </div>
+        </section>
+ 
+        <!-- ========== ÉCRAN DU QUIZ ========== -->
+        <section id="quiz-screen" class="screen" aria-labelledby="question-text">
+            <div class="card quiz-card">
+                <div class="quiz-header">
+                    <span id="category-badge" class="category-badge">Catégorie</span>
+                    <span id="difficulty-badge" class="difficulty-badge">Moyen</span>
+                </div>
+ 
+                <!-- Barre de progression -->
+                <div class="progress-wrapper">
+                    <div class="progress-info">
+                        <span id="question-counter">Question 1 / 5</span>
+                        <span id="score-display" aria-live="polite">Score : 0 pts</span>
+                    </div>
+                    <div class="progress-bar" role="progressbar"
+                         aria-label="Progression du quiz"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                         id="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+ 
+                <!-- Chronomètre (volontairement sans aria-live : pas d'annonce chaque seconde) -->
+                <div class="timer-wrapper">
+                    <div class="timer">
+                        <span class="timer-icon" aria-hidden="true">^\texttwemoji{23f1}^</span>
+                        <span id="timer-text">15s</span>
+                    </div>
+                    <div class="time-bar" aria-hidden="true">
+                        <div class="time-fill" id="time-fill"></div>
+                    </div>
+                </div>
+ 
+                <!-- Question -->
+                <h2 id="question-text" class="question">Chargement...</h2>
+ 
+                <!-- Réponses -->
+                <div id="answers-container" class="answers" role="group"
+                     aria-labelledby="question-text">
+                    <!-- Généré dynamiquement -->
+                </div>
+ 
+                <!-- Explication affichée après la réponse -->
+                <p id="explanation" class="explanation hidden" aria-live="polite"></p>
+ 
+                <button id="next-btn" class="btn btn-primary hidden" type="button">
+                    Question suivante ^$\rightarrow$^
+                </button>
+ 
+                <button id="quit-btn" class="btn btn-link" type="button">
+                    ^$\times$^ Quitter le quiz
+                </button>
+            </div>
+        </section>
+ 
+        <!-- ========== ÉCRAN DE RÉSULTATS ========== -->
+        <section id="result-screen" class="screen" aria-labelledby="result-title">
+            <div class="card result-card">
+                <h1 id="result-title">Quiz terminé ! ^\texttwemoji{1f389}^</h1>
+                <p id="result-category" class="result-category"></p>
+                <p id="new-record-msg" class="new-record hidden">^\texttwemoji{2b50}^ Nouveau record !</p>
+ 
+                <div class="final-score" aria-live="polite">
+                    <div class="score-circle">
+                        <span id="final-score-value">0</span>
+                        <span class="score-total">pts</span>
+                    </div>
+                </div>
+ 
+                <p id="result-message" class="result-message"></p>
+ 
+                <div class="result-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="correct-count">0</span>
+                        <span class="stat-label">Bonnes réponses</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="wrong-count">0</span>
+                        <span class="stat-label">Mauvaises réponses</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="percentage">0%</span>
+                        <span class="stat-label">Réussite</span>
+                    </div>
+                </div>
+ 
+                <!-- Récapitulatif des erreurs -->
+                <div id="review-container" class="review hidden">
+                    <h3>^\texttwemoji{1f4d6}^ À revoir</h3>
+                    <ul id="review-list"></ul>
+                </div>
+ 
+                <div class="result-actions">
+                    <button id="replay-category-btn" class="btn btn-primary" type="button">
+                        ^\texttwemoji{1f504}^ Rejouer cette catégorie
+                    </button>
+                    <button id="change-category-btn" class="btn btn-secondary" type="button">
+                        ^\texttwemoji{1f4da}^ Changer de catégorie
+                    </button>
+                </div>
+            </div>
+        </section>
+ 
+    </main>
+ 
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

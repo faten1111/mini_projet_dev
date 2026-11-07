@@ -310,7 +310,7 @@ button:focus-visible {
 
 /* Récapitulatif des erreurs */
 .review { text-align: left; margin-bottom: 1.75rem; }
-.review h2 { font-family: var(--police-titre); font-size: 1.1rem; color: var(--bordeaux); margin-bottom: 0.6rem; }
+.review h3 { font-family: var(--police-titre); font-size: 1.1rem; color: var(--bordeaux); margin-bottom: 0.6rem; }
 .review ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
 .review li {
     display: flex;
